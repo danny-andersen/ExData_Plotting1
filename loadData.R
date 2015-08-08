@@ -1,7 +1,7 @@
 
 #This R file downloads the data and selects the data and loads the data frame to allow it to be analysed
 # Note: Only data from 2007-02-01 and 2007-02-02 is selected
-# It should be by all R scripts that require to analyse the data
+# It should be used by all R scripts that require to analyse the data
 
 #If source data not present, download and unzip
 if (!file.exists("power_consumption.zip")) {
