@@ -5,17 +5,31 @@
 
 #If source data not present, download and unzip
 if (!file.exists("power_consumption.zip")) {
-  download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip", 
-                destfile = "power_consumption.zip",
+  url <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+  destFile <- "power_consumption.zip"
+  if (.Platform$OS.type == "unix") {
+    #Use wget
+    download.file(url, 
+                destfile = destFile,
                 method = "wget")
+  } else {
+    #Use windows internal2
+    setInternet2(TRUE)
+    download.file(url, 
+                  destfile = destFile,
+                  method = "internal")
+  }
   unzip(zipfile = "power_consumption.zip")
 }
 
-#Pre-filter data to just be for the dates required
-#First try and grep out the required dates
-file.remove("power_consumption_selected.txt")
-system2("egrep", args= c("'^[12]/2/2007|^Date'", "household_power_consumption.txt"), stdout="power_consumption_selected.txt")
-#Check to see if the grep works - if it did then use that data, if not filter it manually
+if (.Platform$OS.type == "unix") {
+  #Pre-filter data to just be for the dates required
+  #First try and grep out the required dates
+  file.remove("power_consumption_selected.txt")
+  system2("egrep", args= c("'^[12]/2/2007|^Date'", "household_power_consumption.txt"), stdout="power_consumption_selected.txt")
+  #Check to see if the grep works - if it did then use that data, if not filter it manually
+}
+
 if (file.exists("power_consumption_selected.txt")) {
   # Read in pre-filtered data if grep worked (may not have it on system)
   df <- read.csv(file="power_consumption_selected.txt", 
